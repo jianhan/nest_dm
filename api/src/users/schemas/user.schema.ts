@@ -60,9 +60,3 @@ UserSchema.pre('save', function save(next: any) {
     });
   });
 });
-
-UserSchema.methods.comparePassword = async function(
-  attemptedPassword: string,
-): Promise<boolean> {
-  return bcrypt.compare(attemptedPassword, this.password);
-};

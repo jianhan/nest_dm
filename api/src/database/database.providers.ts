@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { getConfigService } from '../config/config.service';
+import { DATABASE_CONNECTION } from './constants';
 
 const configs = getConfigService();
 const mongoHost = configs.get('MONGO_HOST');
@@ -8,7 +9,7 @@ const mongoPort = configs.get('MONGO_PORT');
 
 export const databaseProviders = [
   {
-    provide: 'DATABASE_CONNECTION',
+    provide: DATABASE_CONNECTION,
     useFactory: (): Promise<typeof mongoose> =>
       mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDB}`, {
         useNewUrlParser: true,
