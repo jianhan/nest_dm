@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { NotificationKind } from 'rxjs';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +20,7 @@ export class AuthService {
     if (!isMatched) {
       return null;
     }
+
     const { password, ...result } = user;
 
     return result;

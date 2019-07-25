@@ -14,8 +14,8 @@ const mongoPort = configs.get('MONGO_PORT');
 
 @Module({
   imports: [
-    AuthModule,
     UsersModule,
+    AuthModule,
     ConfigModule,
     MongooseModule.forRoot(`mongodb://${mongoHost}:${mongoPort}/${mongoDB}`, {
       useNewUrlParser: true,
