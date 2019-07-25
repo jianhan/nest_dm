@@ -1,18 +1,8 @@
 version: "3"
 services:
 
-//   api:
-//     build: api
-//     container_name: "api"
-//     volumes:
-//       - .:/app
-//     links:
-//       - mongo
-//     ports:
-//       - "8008:8008"
-
   mongo:
-    container_name: mongo
+    container_name: nestjs_dm_mongo
     image: mongo:latest
     ports:
       - "27017:27017"
@@ -21,15 +11,6 @@ services:
       - MONGO_LOG_DIR=/dev/null
     volumes:
       - ./data/db:/data/db 
-
-  mongoclient:
-    image: mongoclient/mongoclient:latest
-    container_name: mongoclient
-    hostname: mongoclient
-    depends_on:
-      - mongo
-    ports:
-      - 3300:3000
 
 volumes:
   mongo:
