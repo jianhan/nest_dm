@@ -1,11 +1,39 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import * as Joi from 'joi';
+
+export interface EnvConfig {
+  [key: string]: string;
+}
 
 export class ConfigService {
-  private readonly envConfig: { [key: string]: string };
+  private readonly envConfig: EnvConfig;
 
   constructor(filePath: string) {
-    this.envConfig = dotenv.parse(fs.readFileSync(filePath));
+    const config = dotenv.parse(fs.readFileSync(filePath));
+    this.envConfig = this.validate(config);
+  }
+
+  private validate(envConfig: EnvConfig): EnvConfig {
+    const envVarsSchema: Joi.ObjectSchema = Joi.object({
+      NODE_ENV: Joi.string()
+        .valid(['development', 'production', 'test', 'provision'])
+        .default('development'),
+      MONGO_HOST: Joi.string().default('localhost'),
+      MONGO_PORT: Joi.number().default(27017),
+      MONGO_DB: Joi.string().default('nestjs_dm'),
+      APP_PORT: Joi.number().default(8007),
+      JWT_SECRET: Joi.string().regex(/^[a-zA-Z0-9]{10,40}$/),
+    });
+
+    const { error, value: validatedEnvConfig } = Joi.validate(
+      envConfig,
+      envVarsSchema,
+    );
+    if (error) {
+      throw new Error(`Config validation error: ${error.message}`);
+    }
+    return validatedEnvConfig;
   }
 
   get(key: string): string {
