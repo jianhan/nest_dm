@@ -11,12 +11,6 @@ export class AppController {
     private readonly config: ConfigService,
   ) {}
 
-  @UseGuards(AuthGuard('local'))
-  @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
-  }
-
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
   getProfile(@Request() req) {
