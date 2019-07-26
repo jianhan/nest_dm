@@ -5,14 +5,14 @@ import * as bcrypt from 'bcrypt';
 
 export const UserSchema = new mongoose.Schema(
   {
-    first_name: {
+    firstName: {
       type: String,
       unique: true,
       required: [true, 'First name is required!'],
       trim: true,
       index: true,
     },
-    last_name: {
+    lastName: {
       type: String,
       unique: true,
       required: [true, 'Last name is required!'],
