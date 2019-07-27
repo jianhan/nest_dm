@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserLoginDto } from './dto/user-login.dto';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
 import { ConfigModule } from '../config/config.module';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { getConfigService } from '../config/config.service';
 
 describe('Auth Controller', () => {
   let authController: AuthController;
@@ -21,7 +20,7 @@ describe('Auth Controller', () => {
         UsersModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
-          secret: jwtConstants.secret,
+          secret: getConfigService().get('JWT_SECRET'),
           signOptions: { expiresIn: '600s' },
         }),
       ],
@@ -39,8 +38,12 @@ describe('Auth Controller', () => {
   it('login should return token', async () => {
     const result = { access_token: 'testToken' };
     jest
-      .spyOn(authService, 'login')
+      .spyOn(authService, 'token')
       .mockImplementation(async (user: any) => result);
-    expect(await authController.login(new UserLoginDto())).toBe(result);
+    expect(
+      await authController.login({
+        user: { email: 'test@gmail.com', _id: 'test id' },
+      }),
+    ).toBe(result);
   });
 });

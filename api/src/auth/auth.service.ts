@@ -4,6 +4,12 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { ObjectId } from 'bson';
 
+/**
+ * JwtPayload represent data structure used for generating signed JWT.
+ *
+ * @export
+ * @interface JwtPayload
+ */
 export interface JwtPayload {
   sub: ObjectId;
   email: string;
@@ -55,6 +61,13 @@ export class AuthService {
     return result;
   }
 
+  /**
+   * token generates signed JWT.
+   *
+   * @param {JwtPayload} payload
+   * @returns
+   * @memberof AuthService
+   */
   async token(payload: JwtPayload) {
     return {
       access_token: this.jwtService.sign(payload),

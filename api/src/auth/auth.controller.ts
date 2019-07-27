@@ -1,5 +1,4 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
-import { UserLoginDto } from './dto/user-login.dto';
 import { AuthService, JwtPayload } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -27,7 +26,7 @@ export class AuthController {
    */
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Request() req, @Body() userLoginDto: UserLoginDto) {
+  async login(@Request() req) {
     const payload: JwtPayload = {
       email: req.user.email,
       sub: req.user._id,
