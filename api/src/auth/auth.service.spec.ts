@@ -7,14 +7,12 @@ import { jwtConstants } from './constants';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '../config/config.module';
-import { ConfigService } from '../config/config.service';
 
 describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      // providers: [AuthService, UsersService, JwtService, ...usersProviders],
       imports: [
         ConfigModule,
         UsersModule,
