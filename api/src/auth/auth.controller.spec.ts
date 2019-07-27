@@ -36,7 +36,7 @@ describe('Auth Controller', () => {
     expect(authController).toBeDefined();
   });
 
-  it('should return an array of cats', async () => {
+  it('login should return token', async () => {
     const result = { access_token: 'testToken' };
     jest
       .spyOn(authService, 'login')

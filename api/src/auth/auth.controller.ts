@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UseGuards, Injectable } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/user-login.dto';
-import { AuthService } from './auth.service';
+import { AuthService, JwtPayload } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 
 /**
@@ -25,9 +25,13 @@ export class AuthController {
    * @returns
    * @memberof AuthController
    */
-  @Post('login')
   @UseGuards(AuthGuard('local'))
-  async login(@Body() userLoginDto: UserLoginDto) {
-    return this.authService.login(userLoginDto);
+  @Post('login')
+  async login(@Request() req, @Body() userLoginDto: UserLoginDto) {
+    const payload: JwtPayload = {
+      email: req.user.email,
+      sub: req.user._id,
+    };
+    return this.authService.token(payload);
   }
 }
