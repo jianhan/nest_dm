@@ -7,21 +7,18 @@ export const UserSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      unique: true,
       required: [true, 'First name is required!'],
       trim: true,
       index: true,
     },
     lastName: {
       type: String,
-      unique: true,
       required: [true, 'Last name is required!'],
       trim: true,
       index: true,
     },
     email: {
       type: String,
-      unique: true,
       required: [true, 'Email is required!'],
       trim: true,
       index: true,
@@ -33,9 +30,16 @@ export const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required!'],
       trim: true,
       minlength: [8, 'Password need to be at least 8 characters long.'],
+    },
+    github: {
+      provider: String,
+      profileId: Number,
+      avatarUrl: String,
+      url: String,
+      username: String,
+      displayName: String,
     },
   },
   { timestamps: true },

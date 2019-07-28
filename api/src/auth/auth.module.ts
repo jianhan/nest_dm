@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { getConfigService } from '../config/config.service';
+import { GithubStrategy } from './github-strategy';
 
 /**
  * Auth module handles authentications and authorizations for the app.
@@ -24,7 +25,7 @@ import { getConfigService } from '../config/config.service';
       signOptions: { expiresIn: '600s' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GithubStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })

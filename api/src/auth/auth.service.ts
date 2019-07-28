@@ -1,19 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { ObjectId } from 'bson';
-
-/**
- * JwtPayload represent data structure used for generating signed JWT.
- *
- * @export
- * @interface JwtPayload
- */
-export interface JwtPayload {
-  sub: ObjectId;
-  email: string;
-}
+import { JwtPayload } from './jwt.payload';
+import { Oauth2Payload } from './oauth2';
 
 /**
  * AuthService handles logics of authentication.
@@ -72,5 +62,13 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async tokenOauth2(oauth2Payload: Oauth2Payload): Promise<string> {
+    try {
+      return this.jwtService.sign(oauth2Payload);
+    } catch (err) {
+      throw new InternalServerErrorException('validateOAuthLogin', err.message);
+    }
   }
 }

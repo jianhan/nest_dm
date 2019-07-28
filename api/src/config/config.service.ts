@@ -19,11 +19,17 @@ export class ConfigService {
       NODE_ENV: Joi.string()
         .valid(['development', 'production', 'test', 'provision'])
         .default('development'),
+      // Mongo
       MONGO_HOST: Joi.string().default('localhost'),
       MONGO_PORT: Joi.number().default(27017),
       MONGO_DB: Joi.string().default('nestjs_dm'),
       APP_PORT: Joi.number().default(8007),
+      // JWT
       JWT_SECRET: Joi.string().regex(/^[a-zA-Z0-9]{10,40}$/),
+      // Github
+      GITHUB_CLIENT_ID: Joi.string().required(),
+      GITHUB_CLIENT_SECRET: Joi.string().required(),
+      GITHUB_CALLBACK_URL: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
