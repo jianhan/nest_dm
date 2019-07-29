@@ -3,7 +3,8 @@ import { Model } from 'mongoose';
 import { User } from './interfaces/user.interface';
 import { USER_MODEL } from './constants';
 import { SignupDto } from './dto/signup.dto';
-import { Oauth2Payload, Oauth2Profile } from '../auth/oauth2';
+import { Oauth2Profile } from '../auth/oauth2/oauth2.profile';
+import { Oauth2Payload } from '../auth/oauth2/oauth2.payload';
 
 @Injectable()
 export class UsersService {

@@ -8,7 +8,6 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { getConfigService } from '../config/config.service';
 import { GithubStrategy } from './github-strategy';
-import { GithubProfileConverter } from './oauth2';
 import { authProviders } from './auth.provider';
 
 /**

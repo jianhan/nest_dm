@@ -2,7 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { Oauth2Payload, JwtPayload } from './oauth2';
+import { JwtPayload } from './jwt.payload';
+import { Oauth2Payload } from './oauth2/oauth2.payload';
 
 /**
  * AuthService handles logics of authentication.

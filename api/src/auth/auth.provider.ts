@@ -1,4 +1,4 @@
-import { GithubProfileConverter } from './oauth2';
+import { GithubProfileConverter } from './oauth2/github-profile.converter';
 
 export const authProviders = [
   {

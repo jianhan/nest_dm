@@ -1,45 +1,16 @@
-import { Oauth2Provider } from './constants';
 import * as _ from 'lodash';
-import { MissingProfileValueException } from './exceptions';
 import { Injectable } from '@nestjs/common';
 import * as human from 'humanparser';
-
-/**
- * JwtPayload represent data structure used for generating signed JWT.
- *
- * @export
- * @interface JwtPayload
- */
-export interface JwtPayload {
-  sub: string;
-  email: string;
-}
-
-export interface Oauth2Payload {
-  email: string;
-  profileId: number;
-  provider: Oauth2Provider;
-}
-
-export interface Oauth2Profile extends Oauth2Payload {
-  firstName: string;
-  lastName: string;
-  displayName: string;
-  username: string;
-  profileUrl: string;
-  avatarUrl?: string;
-}
-
-export interface Converter {
-  convert(): Oauth2Profile;
-  setProfile(profile: any): Converter;
-}
+import { MissingProfileValueException } from '../exceptions';
+import { Oauth2Profile } from './oauth2.profile';
+import { Oauth2Provider } from './constants';
+import { Oauth2Converter } from './oauth2.converter';
 
 @Injectable()
-export class GithubProfileConverter implements Converter {
+export class GithubProfileConverter implements Oauth2Converter {
   private profile: any;
 
-  public setProfile(profile: any): Converter {
+  public setProfile(profile: any): Oauth2Converter {
     this.profile = profile;
     return this;
   }

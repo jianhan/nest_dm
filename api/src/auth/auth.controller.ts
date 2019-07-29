@@ -12,7 +12,9 @@ import * as _ from 'lodash';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../users/users.service';
-import { Oauth2Profile, GithubProfileConverter, JwtPayload } from './oauth2';
+import { JwtPayload } from './jwt.payload';
+import { Oauth2Profile } from './oauth2/oauth2.profile';
+import { GithubProfileConverter } from './oauth2/github-profile.converter';
 
 /**
  * AuthController handles authentication related routes.
