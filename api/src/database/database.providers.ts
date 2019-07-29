@@ -13,6 +13,7 @@ export const databaseProviders = [
     useFactory: (): Promise<typeof mongoose> =>
       mongoose.connect(`mongodb://${mongoHost}:${mongoPort}/${mongoDB}`, {
         useNewUrlParser: true,
+        useFindAndModify: false,
       }),
   },
 ];

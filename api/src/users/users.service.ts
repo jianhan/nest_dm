@@ -43,14 +43,12 @@ export class UsersService {
     return user;
   }
 
-  async upsertByOauth2Profile(
-    payload: Oauth2Profile,
-  ): Promise<User | undefined> {
+  async upsertOauth2Profile(payload: Oauth2Profile): Promise<User | undefined> {
     const user = await this.userModel.findOneAndUpdate(
       { 'github.profileId': payload.profileId },
       {
-        firstName: 'test',
-        lastName: 'test',
+        firstName: payload.firstName,
+        lastName: payload.lastName,
         email: payload.email,
         github: payload,
       },

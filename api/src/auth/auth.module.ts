@@ -8,6 +8,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { getConfigService } from '../config/config.service';
 import { GithubStrategy } from './github-strategy';
+import { GithubProfileConverter } from './oauth2';
+import { authProviders } from './auth.provider';
 
 /**
  * Auth module handles authentications and authorizations for the app.
@@ -25,7 +27,13 @@ import { GithubStrategy } from './github-strategy';
       signOptions: { expiresIn: '600s' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GithubStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    GithubStrategy,
+    ...authProviders,
+  ],
   exports: [AuthService],
   controllers: [AuthController],
 })

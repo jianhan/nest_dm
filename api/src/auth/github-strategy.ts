@@ -31,8 +31,8 @@ export class GithubStrategy extends PassportStrategy(Strategy) {
     try {
       const oauth2Payload: Oauth2Payload = {
         email: profile.emails[0].value,
-        profileId: profile.Id,
-        provider: Oauth2Provider.GOOGLE,
+        profileId: profile.id,
+        provider: Oauth2Provider.GITHUB,
       };
       const jwt: string = await this.authService.tokenOauth2(oauth2Payload);
       const user = {

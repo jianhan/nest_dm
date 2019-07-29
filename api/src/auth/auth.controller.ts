@@ -1,10 +1,18 @@
-import { Controller, Post, UseGuards, Request, Get, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+  Req,
+  InternalServerErrorException,
+  Inject,
+} from '@nestjs/common';
+import * as _ from 'lodash';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtPayload } from './jwt.payload';
 import { UsersService } from '../users/users.service';
-import { Oauth2Profile } from './oauth2';
-import { Oauth2Provider } from './constants';
+import { Oauth2Profile, GithubProfileConverter, JwtPayload } from './oauth2';
 
 /**
  * AuthController handles authentication related routes.
@@ -22,6 +30,8 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    @Inject('GithubProfileConverter')
+    private readonly githubProfileConverter: GithubProfileConverter,
   ) {}
 
   /**
@@ -43,34 +53,31 @@ export class AuthController {
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
-  githubLogin() {}
+  githubLogin() {
+    // passport will initialize oauth flow automatically
+  }
 
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
   async githubLoginCallback(@Req() req) {
-    console.log(req.user.profile);
-    const oauth2Profile: Oauth2Profile = {
-      email: req.user.profile.emails[0].value,
-      profileId: req.user.profile.id,
-      provider: Oauth2Provider.GITHUB,
-      displayName: req.user.profile.displayName,
-      username: req.user.profile.username,
-      profileUrl: req.user.profile.profileUrl,
-      avatarUrl: 'test',
-    };
-    const newUser = await this.userService.upsertByOauth2Profile(oauth2Profile);
-    console.log(newUser, '*****');
+    if (!_.has(req, 'user.jwt')) {
+      throw new InternalServerErrorException('Unable to generate token.');
+    }
+
+    if (!_.has(req, 'user.profile')) {
+      throw new InternalServerErrorException('Unable to get profile.');
+    }
+
+    const profile: Oauth2Profile = this.githubProfileConverter
+      .setProfile(req.user.profile)
+      .convert();
+
+    const newUser = await this.userService.upsertOauth2Profile(profile);
     const jwt: string = req.user.jwt;
     if (jwt) {
       return `<html><body><script>window.opener.postMessage('${jwt}', 'http://localhost:4200')</script></body></html>`;
     } else {
       return 'There was a problem signing in...';
     }
-  }
-
-  @Get('protected')
-  @UseGuards(AuthGuard('jwt'))
-  protectedResource() {
-    return 'JWT is working!';
   }
 }
