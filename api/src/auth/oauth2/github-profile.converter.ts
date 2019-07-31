@@ -1,16 +1,17 @@
 import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import * as human from 'humanparser';
-import { MissingProfileValueException } from '../exceptions';
 import { Oauth2Profile } from './oauth2.profile';
 import { Oauth2Provider } from './constants';
 import { Oauth2Converter } from './oauth2.converter';
+import { GithubProfile } from './github-profile';
+import { validate, ValidationError } from 'class-validator';
 
 @Injectable()
 export class GithubProfileConverter implements Oauth2Converter {
-  private profile: any;
+  private profile: GithubProfile;
 
-  public setProfile(profile: any): Oauth2Converter {
+  public setProfile(profile: GithubProfile): Oauth2Converter {
     this.profile = profile;
     return this;
   }
@@ -32,26 +33,24 @@ export class GithubProfileConverter implements Oauth2Converter {
     );
   }
 
-  private hasEmail(): boolean {
+  private hasEmails(): boolean {
     return (
       !_.has(this.profile, 'emails') ||
       (_.isArray(this.profile.emails) && _.size(this.profile.emails) > 0)
     );
   }
 
-  public convert(): Oauth2Profile {
-    // check if email exists
-    if (!this.hasEmail()) {
-      throw new MissingProfileValueException(
-        'Missing emails from user profile',
-      );
+  public async convert(): Promise<Oauth2Profile | ValidationError[]> {
+    const errors = await validate(this.profile);
+    if (errors.length > 0) {
+      return errors;
     }
 
     const nameObj = this.convertDisplayName();
     const oauth2Profile: Oauth2Profile = {
       firstName: nameObj ? nameObj.firstName : '',
       lastName: nameObj ? nameObj.lastName : '',
-      email: this.profile.emails[0].value,
+      email: this.hasEmails() ? this.profile.emails[0].value : null,
       profileId: this.profile.id,
       provider: Oauth2Provider.GITHUB,
       displayName: this.profile.displayName,

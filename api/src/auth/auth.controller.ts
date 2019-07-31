@@ -15,6 +15,7 @@ import { UsersService } from '../users/users.service';
 import { JwtPayload } from './jwt.payload';
 import { Oauth2Profile } from './oauth2/oauth2.profile';
 import { GithubProfileConverter } from './oauth2/github-profile.converter';
+import { ValidationError } from 'class-validator';
 
 /**
  * AuthController handles authentication related routes.
@@ -70,11 +71,17 @@ export class AuthController {
       throw new InternalServerErrorException('Unable to get profile.');
     }
 
-    const profile: Oauth2Profile = this.githubProfileConverter
+    const profileResult:
+      | Oauth2Profile
+      | ValidationError[] = await this.githubProfileConverter
       .setProfile(req.user.profile)
       .convert();
 
-    const newUser = await this.userService.upsertOauth2Profile(profile);
+    if (profileResult instanceof Array) {
+      throw new InternalServerErrorException(profileResult, 'Invalid profile.');
+    }
+
+    await this.userService.upsertOauth2Profile(profileResult);
     const jwt: string = req.user.jwt;
     if (jwt) {
       return `<html><body><script>window.opener.postMessage('${jwt}', 'http://localhost:4200')</script></body></html>`;
