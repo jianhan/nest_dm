@@ -1,10 +1,13 @@
-import { Oauth2Payload } from './oauth2.payload';
+import { Oauth2Provider } from './constants';
 
-export interface Oauth2Profile extends Oauth2Payload {
-  firstName: string;
-  lastName: string;
+export interface Oauth2Profile {
+  email?: string;
+  avatarUrl?: string;
+  firstName?: string;
+  lastName?: string;
+  profileId: number;
+  provider: Oauth2Provider;
   displayName: string;
   username: string;
   profileUrl: string;
-  avatarUrl?: string;
 }

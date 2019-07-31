@@ -35,8 +35,9 @@ export class GithubProfileConverter implements Oauth2Converter {
 
   private hasEmails(): boolean {
     return (
-      !_.has(this.profile, 'emails') ||
-      (_.isArray(this.profile.emails) && _.size(this.profile.emails) > 0)
+      _.has(this.profile, 'emails') &&
+      _.isArray(this.profile.emails) &&
+      _.size(this.profile.emails) > 0
     );
   }
 
@@ -46,18 +47,27 @@ export class GithubProfileConverter implements Oauth2Converter {
       return errors;
     }
 
-    const nameObj = this.convertDisplayName();
     const oauth2Profile: Oauth2Profile = {
-      firstName: nameObj ? nameObj.firstName : '',
-      lastName: nameObj ? nameObj.lastName : '',
-      email: this.hasEmails() ? this.profile.emails[0].value : null,
       profileId: this.profile.id,
       provider: Oauth2Provider.GITHUB,
       displayName: this.profile.displayName,
       username: this.profile.username,
       profileUrl: this.profile.profileUrl,
-      avatarUrl: this.hasPhotos() ? this.profile.photos[0].value : null,
     };
+
+    const nameObj = this.convertDisplayName();
+    if (nameObj) {
+      oauth2Profile.firstName = nameObj.firstName;
+      oauth2Profile.lastName = nameObj.lastName;
+    }
+
+    if (this.hasEmails()) {
+      oauth2Profile.email = this.profile.emails[0].value;
+    }
+
+    if (this.hasPhotos()) {
+      oauth2Profile.avatarUrl = this.profile.photos[0].value;
+    }
 
     return oauth2Profile;
   }

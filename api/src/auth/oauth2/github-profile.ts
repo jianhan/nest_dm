@@ -1,4 +1,11 @@
-import { IsInt, IsString, IsUrl, IsArray, IsNotEmpty } from 'class-validator';
+import {
+  IsInt,
+  IsString,
+  IsUrl,
+  IsArray,
+  IsNotEmpty,
+  ValidateIf,
+} from 'class-validator';
 
 export interface ArrayValue {
   value: string;
@@ -20,6 +27,7 @@ export class GithubProfile {
   @IsArray()
   photos: ArrayValue[];
 
+  @ValidateIf(o => o.emails !== undefined)
   @IsArray()
   emails: ArrayValue[];
 }

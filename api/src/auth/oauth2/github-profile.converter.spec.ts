@@ -24,7 +24,7 @@ afterEach(() => {
 });
 
 describe('github profile converter', () => {
-  test('successfully convert', async () => {
+  test('successful with all values', async () => {
     githubProfileConverter.setProfile(githubProfile);
     const user: Oauth2Profile = (await githubProfileConverter.convert()) as Oauth2Profile;
     expect(user.displayName).toBe(githubProfile.displayName);
@@ -34,5 +34,14 @@ describe('github profile converter', () => {
     expect(user.avatarUrl).toBe(githubProfile.photos[0].value);
     expect(user.firstName).toBe('John');
     expect(user.lastName).toBe('Smith');
+  });
+
+  test('successful with missing emails', async () => {
+    delete githubProfile.emails;
+    githubProfileConverter.setProfile(githubProfile);
+    const profile: Oauth2Profile = (await githubProfileConverter.convert()) as Oauth2Profile;
+    expect(profile.profileId).toBe(githubProfile.id);
+    expect(profile.profileUrl).toBe(githubProfile.profileUrl);
+    expect(profile.email).toBe(undefined);
   });
 });
