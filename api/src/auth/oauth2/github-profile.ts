@@ -12,6 +12,7 @@ export interface ArrayValue {
 }
 export class GithubProfile {
   @IsInt()
+  @IsNotEmpty()
   id: number;
 
   @IsString()
@@ -25,6 +26,7 @@ export class GithubProfile {
   profileUrl: string;
 
   @IsArray()
+  @ValidateIf(o => o.profile !== undefined)
   photos: ArrayValue[];
 
   @ValidateIf(o => o.emails !== undefined)

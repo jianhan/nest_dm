@@ -2,6 +2,7 @@ import { GithubProfileConverter } from './github-profile.converter';
 import { GithubProfile } from './github-profile';
 import { ValidationError } from '@nestjs/common';
 import { Oauth2Profile } from './oauth2.profile';
+import * as VError from 'verror';
 let githubProfileConverter: GithubProfileConverter = null;
 let githubProfile: GithubProfile = null;
 
@@ -26,7 +27,7 @@ afterEach(() => {
 describe('github profile converter', () => {
   test('successful with all values', async () => {
     githubProfileConverter.setProfile(githubProfile);
-    const user: Oauth2Profile = (await githubProfileConverter.convert()) as Oauth2Profile;
+    const user: Oauth2Profile = await githubProfileConverter.convert();
     expect(user.displayName).toBe(githubProfile.displayName);
     expect(user.email).toBe(githubProfile.emails[0].value);
     expect(user.profileId).toBe(githubProfile.id);
@@ -43,5 +44,13 @@ describe('github profile converter', () => {
     expect(profile.profileId).toBe(githubProfile.id);
     expect(profile.profileUrl).toBe(githubProfile.profileUrl);
     expect(profile.email).toBe(undefined);
+  });
+
+  test('fail with missing id', async () => {
+    delete githubProfile.id;
+    githubProfileConverter.setProfile(githubProfile);
+    await expect(githubProfileConverter.convert()).rejects.toThrowError(
+      'invalid user profile, unable to process request',
+    );
   });
 });

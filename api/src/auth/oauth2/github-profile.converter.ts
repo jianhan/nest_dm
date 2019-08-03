@@ -5,7 +5,8 @@ import { Oauth2Profile } from './oauth2.profile';
 import { Oauth2Provider } from './constants';
 import { Oauth2Converter } from './oauth2.converter';
 import { GithubProfile } from './github-profile';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
+import * as VError from 'verror';
 
 @Injectable()
 export class GithubProfileConverter implements Oauth2Converter {
@@ -41,10 +42,18 @@ export class GithubProfileConverter implements Oauth2Converter {
     );
   }
 
-  public async convert(): Promise<Oauth2Profile | ValidationError[]> {
+  public async convert(): Promise<Oauth2Profile> {
     const errors = await validate(this.profile);
     if (errors.length > 0) {
-      return errors;
+      throw new VError(
+        {
+          name: 'InvalidUserProfile',
+          info: {
+            errors,
+          },
+        },
+        'invalid user profile, unable to process request',
+      );
     }
 
     const oauth2Profile: Oauth2Profile = {
