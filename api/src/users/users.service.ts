@@ -1,10 +1,12 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User } from './interfaces/user.interface';
 import { USER_MODEL } from './constants';
 import { SignupDto } from './dto/signup.dto';
 import { Oauth2Profile } from '../auth/oauth2/oauth2.profile';
 import { Oauth2Payload } from '../auth/oauth2/oauth2.payload';
+import * as VError from 'verror';
+import { sprintf } from 'sprintf-js';
 
 @Injectable()
 export class UsersService {
@@ -18,8 +20,15 @@ export class UsersService {
     return user;
   }
 
-  async singup(singupDto: SignupDto): Promise<User> {
-    const user = new this.userModel(singupDto);
+  async signup(signupDto: SignupDto): Promise<User> {
+    const currentUser = await this.findByEmail(signupDto.email);
+    if (currentUser) {
+      throw new BadRequestException(
+        sprintf('user with email %s already exists', signupDto.email),
+      );
+    }
+
+    const user = new this.userModel(signupDto);
     return await user.save();
   }
 

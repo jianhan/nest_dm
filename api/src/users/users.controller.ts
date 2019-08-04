@@ -10,6 +10,6 @@ export class UsersController {
   @Post('signup')
   @UseFilters(MongoExceptionFilter)
   async signup(@Body() signupDto: SignupDto) {
-    return this.usersService.singup(signupDto);
+    return this.usersService.signup(signupDto);
   }
 }
