@@ -8,15 +8,37 @@ import { GithubProfile } from './github-profile';
 import { validate } from 'class-validator';
 import * as VError from 'verror';
 
+/**
+ * GithubProfileConverter is converts github profile into a oauth2 profile which
+ * will be saved into database.
+ *
+ * @export
+ * @class GithubProfileConverter
+ * @implements {Oauth2Converter}
+ */
 @Injectable()
 export class GithubProfileConverter implements Oauth2Converter {
   private profile: GithubProfile;
 
+  /**
+   * setProfile is setter for profile.
+   *
+   * @param {GithubProfile} profile
+   * @returns {Oauth2Converter}
+   * @memberof GithubProfileConverter
+   */
   public setProfile(profile: GithubProfile): Oauth2Converter {
     this.profile = profile;
     return this;
   }
 
+  /**
+   * convertDisplayName converts full name into first and last name.
+   *
+   * @private
+   * @returns {(human.NameOutput | null)}
+   * @memberof GithubProfileConverter
+   */
   private convertDisplayName(): human.NameOutput | null {
     const displayName = _.get(this.profile, 'displayName', '');
     if (displayName) {
@@ -26,6 +48,13 @@ export class GithubProfileConverter implements Oauth2Converter {
     return null;
   }
 
+  /**
+   * hasPhotos checks if profile contains valid photos.
+   *
+   * @private
+   * @returns {boolean}
+   * @memberof GithubProfileConverter
+   */
   private hasPhotos(): boolean {
     return (
       _.has(this.profile, 'photos') &&
@@ -34,6 +63,13 @@ export class GithubProfileConverter implements Oauth2Converter {
     );
   }
 
+  /**
+   * hasEmails checks if profile has emails.
+   *
+   * @private
+   * @returns {boolean}
+   * @memberof GithubProfileConverter
+   */
   private hasEmails(): boolean {
     return (
       _.has(this.profile, 'emails') &&
@@ -42,6 +78,12 @@ export class GithubProfileConverter implements Oauth2Converter {
     );
   }
 
+  /**
+   * convert implements convert to convert payload into oauth2 profile.
+   *
+   * @returns {Promise<Oauth2Profile>}
+   * @memberof GithubProfileConverter
+   */
   public async convert(): Promise<Oauth2Profile> {
     const errors = await validate(this.profile);
     if (errors.length > 0) {
