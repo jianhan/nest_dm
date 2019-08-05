@@ -56,12 +56,24 @@ export class AuthController {
     return this.authService.token(payload);
   }
 
+  /**
+   * githubLogin start oauth2 authentication via passport.
+   *
+   * @memberof AuthController
+   */
   @Get('github')
   @UseGuards(AuthGuard('github'))
   githubLogin() {
     // passport will initialize oauth flow automatically
   }
 
+  /**
+   * githubLoginCallback handles callback from github oauth2 authentication.
+   *
+   * @param {*} req
+   * @returns
+   * @memberof AuthController
+   */
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
   @UseFilters(HttpExceptionFilter)

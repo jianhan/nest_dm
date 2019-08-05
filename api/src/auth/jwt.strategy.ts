@@ -5,6 +5,13 @@ import { ConfigService } from '../config/config.service';
 import { Oauth2Payload } from './oauth2/oauth2.payload';
 import { JwtPayload } from './jwt.payload';
 
+/**
+ * JwtStrategy is passport JWT strategy.
+ *
+ * @export
+ * @class JwtStrategy
+ * @extends {PassportStrategy(Strategy)}
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly config: ConfigService) {
@@ -15,6 +22,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * validate returns jwt payload.
+   *
+   * @param {(JwtPayload | Oauth2Payload)} payload
+   * @returns
+   * @memberof JwtStrategy
+   */
   async validate(payload: JwtPayload | Oauth2Payload) {
     return payload;
   }

@@ -64,6 +64,13 @@ export class AuthService {
     };
   }
 
+  /**
+   * tokenOauth2 generates token for oauth2 authentication.
+   *
+   * @param {Oauth2Payload} oauth2Payload
+   * @returns {Promise<string>}
+   * @memberof AuthService
+   */
   async tokenOauth2(oauth2Payload: Oauth2Payload): Promise<string> {
     try {
       return this.jwtService.sign(oauth2Payload);

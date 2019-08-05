@@ -16,7 +16,6 @@ import { authProviders } from './auth.provider';
  * @export
  * @class AuthModule
  */
-
 @Module({
   imports: [
     UsersModule,

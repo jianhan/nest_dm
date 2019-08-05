@@ -7,8 +7,23 @@ import { Oauth2Provider } from './oauth2/constants';
 import { Oauth2Payload } from './oauth2/oauth2.payload';
 import { GithubProfile } from './oauth2/github-profile';
 
+/**
+ * GithubStrategy process the logic of oauth2 authentication
+ * for github provider.
+ *
+ * @export
+ * @class GithubStrategy
+ * @extends {PassportStrategy(Strategy)}
+ */
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy) {
+  /**
+   * Creates an instance of GithubStrategy and resolve config and auth service dependencies.
+   *
+   * @param {ConfigService} config
+   * @param {AuthService} authService
+   * @memberof GithubStrategy
+   */
   constructor(
     private readonly config: ConfigService,
     private readonly authService: AuthService,
@@ -22,6 +37,16 @@ export class GithubStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * validate validates and generates token for oauth2 authentication.
+   *
+   * @param {*} request
+   * @param {string} accessToken
+   * @param {string} refreshToken
+   * @param {GithubProfile} profile
+   * @param {*} done
+   * @memberof GithubStrategy
+   */
   async validate(
     request: any,
     accessToken: string,
